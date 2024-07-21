@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes borderAnimation {
+    0% {
+      border-color: transparent;
+      border-width: 3px;
+    }
+    50% {
+      border-color: rgb(33, 114, 160);
+      border-width: 3px;
+    }
+    100% {
+      border-color: transparent;
+      border-width: 3px;
+    }
+  }
+  
+  .border-animation {
+    animation: borderAnimation 2s infinite;
+  }
+  

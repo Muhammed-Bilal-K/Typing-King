@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { VscSymbolKeyword } from "react-icons/vsc";
 import { FaChessKing } from "react-icons/fa";
-// import { fetchNewParagraph } from "../Services/Api";
-
-const Paragraph: string =
-  "debbie knew she was being selfish and unreasonable. She understood why the others in the room were angry and frustrated with her and the way she was acting.";
+import { fetchNewParagraph } from "../Services/Api";
+import { RiRestartLine } from "react-icons/ri";
 
 const LaunchPad: React.FC = () => {
   let MaxTime: number = 60;
@@ -15,7 +13,8 @@ const LaunchPad: React.FC = () => {
   // const [CPM, setCPM] = useState<number>(0);
   const [showModal, setShowModal] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  // const [Paragraph, setParagraph] = useState<string>(defaultParagraph);
+  const [Paragraph, setParagraph] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
   const charRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const [charIndex, setCharIndex] = useState<number>(0);
   const [correctWrong, setCorrectWrong] = useState<string[]>([]);
@@ -29,11 +28,13 @@ const LaunchPad: React.FC = () => {
 
   useEffect(() => {
     const initializeTest = async () => {
-      // const newParagraph = await fetchNewParagraph();
-      // setParagraph(newParagraph);
-      // setCorrectWrong(Array(newParagraph.length).fill(""));
+      setLoading(true);
+      const newParagraph = await fetchNewParagraph();
+      setParagraph(newParagraph);
+      setCorrectWrong(Array(newParagraph.length).fill(""));
+      setLoading(false);
     };
-    
+
     initializeTest();
   }, []);
 
@@ -66,14 +67,17 @@ const LaunchPad: React.FC = () => {
     };
   }, [isTyping, timeLeft]);
 
-  const restartTest = () => {
+  const restartTest = async () => {
     setTimeLeft(MaxTime);
     setMistakes(0);
     setWPM(0);
-    // setCPM(0);
     setIsTyping(false);
     setCharIndex(0);
-    setCorrectWrong(Array(Paragraph.length).fill(""));
+    setLoading(true);
+    const newParagraph = await fetchNewParagraph();
+    setParagraph(newParagraph);
+    setCorrectWrong(Array(newParagraph.length).fill(""));
+    setLoading(false);
     setShowModal(false);
 
     if (inputRef.current) {
@@ -86,14 +90,14 @@ const LaunchPad: React.FC = () => {
     const characters = charRefs.current;
     let currentChar = characters[charIndex];
     console.log(currentChar?.textContent);
-    
+
     let typedChar = e.target.value.slice(-1);
-  
+
     if (charIndex < characters.length && timeLeft > 0) {
       if (!isTyping) {
         setIsTyping(true);
       }
-  
+
       if (typedChar === currentChar?.textContent) {
         setCharIndex((prevIndex) => prevIndex + 1);
         setCorrectWrong((prev) => {
@@ -113,8 +117,7 @@ const LaunchPad: React.FC = () => {
 
       console.log(charIndex);
       console.log(characters.length - 1);
-      
-  
+
       if (charIndex === characters.length - 1) {
         setIsTyping(false);
         showPopup();
@@ -123,7 +126,6 @@ const LaunchPad: React.FC = () => {
       setIsTyping(false);
     }
   };
-  
 
   const showPopup = () => {
     setShowModal(true);
@@ -164,7 +166,13 @@ const LaunchPad: React.FC = () => {
             </h1>
           </div>
           <div>
-            <h1 className="text-white text-1xl underline">No. of words: 60</h1>
+            <RiRestartLine
+                className="w-20 cursor-pointer text-white rounded bg-blue-500"
+                onClick={restartTest}
+                />
+          </div>
+          <div>
+            <h1 className="text-white text-1xl underline">No. of words: {Paragraph.length}</h1>
           </div>
         </div>
       </div>
@@ -177,25 +185,73 @@ const LaunchPad: React.FC = () => {
               ref={inputRef}
               onChange={handleChange}
             />
-            {Paragraph.split("").map((char, index) => (
-              <span
-                className={`text-2xl text-gray-500 ${
-                  index === charIndex ? "text-green-400 border-r-4" : ""
-                } bg-sky-900 rounded-md p-2 mx-[1px] mt-[2px] border ${
-                  correctWrong[index] === "correct"
-                    ? "!bg-green-600 text-white"
-                    : correctWrong[index] === "wrong"
-                    ? "!bg-red-600 text-white"
-                    : ""
-                }`}
-                key={index}
-                ref={(e) => {
-                  charRefs.current[index] = e;
-                }}
-              >
-                {char}
-              </span>
-            ))}
+            {loading ? (
+              <div role="status" className="space-y-2.5 animate-pulse w-full">
+                <div className="flex items-center w-full">
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                </div>
+                <div className="flex items-center w-full">
+                  <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-24"></div>
+                </div>
+                <div className="flex items-center w-full">
+                  <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-200 rounded-full dark:bg-gray-700 w-80"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                </div>
+                <div className="flex items-center w-full">
+                  <div className="h-2.5 ms-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-24"></div>
+                </div>
+                <div className="flex items-center w-full">
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-32"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-24"></div>
+                  <div className="h-2.5 ms-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full"></div>
+                </div>
+                <div className="flex items-center w-full">
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                  <div className="h-2.5 ms-2 bg-gray-200 rounded-full dark:bg-gray-700 w-80"></div>
+                  <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
+                </div>
+              </div>
+            ) : (
+              Paragraph.split("").map((char, index) => (
+                <span
+                  className={`text-2xl text-gray-500 ${
+                    index === charIndex ? "text-green-400 border-r-4" : ""
+                  } bg-sky-900 rounded-md p-2 mx-[1px] mt-[2px] border ${
+                    correctWrong[index] === "correct"
+                      ? "!bg-green-600 text-white"
+                      : correctWrong[index] === "wrong"
+                      ? "!bg-red-600 text-white"
+                      : ""
+                  }`}
+                  key={index}
+                  ref={(e) => {
+                    charRefs.current[index] = e;
+                  }}
+                >
+                  {char}
+                </span>
+              ))
+            )}
           </div>
         </div>
       </div>

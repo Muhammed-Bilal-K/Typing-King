@@ -1,4 +1,3 @@
-import React from 'react'
 import LauchPad from './Components/LauchPad'
 
 function App() {

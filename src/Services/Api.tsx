@@ -14,6 +14,3 @@ export const fetchNewParagraph = async () => {
     return "Default text for error handling.";
   }
 };
-
-
-// debbie knew she was being selfish and unreasonable. She understood why the others in the room were angry and frustrated with her and the way she was acting."

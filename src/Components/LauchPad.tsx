@@ -12,7 +12,7 @@ const LaunchPad: React.FC = () => {
   const [mistakes, setMistakes] = useState<number>(0);
   const [WPM, setWPM] = useState<number>(0);
   const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [CPM, setCPM] = useState<number>(0);
+  // const [CPM, setCPM] = useState<number>(0);
   const [showModal, setShowModal] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   // const [Paragraph, setParagraph] = useState<string>(defaultParagraph);
@@ -45,9 +45,9 @@ const LaunchPad: React.FC = () => {
         let correctChars = charIndex - mistakes;
         let totalTime = MaxTime - timeLeft;
 
-        let cpm = correctChars * (60 / totalTime);
-        cpm = cpm < 0 || !cpm || cpm === Infinity ? 0 : cpm;
-        setCPM(parseInt(cpm.toFixed(0), 10));
+        // let cpm = correctChars * (60 / totalTime);
+        // cpm = cpm < 0 || !cpm || cpm === Infinity ? 0 : cpm;
+        // setCPM(parseInt(cpm.toFixed(0), 10));
 
         let wpm = Math.round((correctChars / 5 / totalTime) * 60);
         wpm = wpm < 0 || !wpm || wpm === Infinity ? 0 : wpm;
@@ -70,7 +70,7 @@ const LaunchPad: React.FC = () => {
     setTimeLeft(MaxTime);
     setMistakes(0);
     setWPM(0);
-    setCPM(0);
+    // setCPM(0);
     setIsTyping(false);
     setCharIndex(0);
     setCorrectWrong(Array(Paragraph.length).fill(""));
